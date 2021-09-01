@@ -33,7 +33,6 @@ export function TodoItems() {
 			.then((todoItems) => {
 				setTodoItems(todoItems);
 			});
-		setTimeout(function () {}, 900000);
 	});
 
 	return (
