@@ -27,9 +27,7 @@ function addTodo(title: string) {
 export function TodoItems() {
 	const [todoItems, setTodoItems] = useState([]);
 
-	// Similar to componentDidMount and componentDidUpdate:
 	useEffect(() => {
-		// Update the document title using the browser API
 		fetch('http://localhost:4000/todo')
 			.then((res) => res.json())
 			.then((todoItems) => {
