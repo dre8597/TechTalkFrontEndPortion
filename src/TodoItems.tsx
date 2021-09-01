@@ -54,10 +54,12 @@ export function TodoItems() {
 						type='button'
 						className='btn btn-primary'
 						onClick={(): void => {
-							addTodo(
-								(document.getElementById('todoItem') as HTMLInputElement)
-									?.value || ''
-							);
+							const item = (
+								document.getElementById('todoItem') as HTMLInputElement
+							).value;
+							if (item) {
+								addTodo(item);
+							}
 						}}
 					>
 						{' '}
