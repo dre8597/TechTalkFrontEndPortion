@@ -1,39 +1,46 @@
 import React, { useEffect, useState } from 'react';
 
-function deleteTodo(title: string) {
-	fetch('http://localhost:4000/todo', {
-		body: JSON.stringify({ todoItem: title }),
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	})
-		.then((res) => res.json())
-		.then((res) => console.log(res));
-}
-
-function addTodo(title: string) {
-	fetch('http://localhost:4000/todo', {
-		body: JSON.stringify({ todoItem: title }),
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	})
-		.then((res) => res.json())
-		.then((res) => console.log(res));
-}
-
 export function TodoItems() {
+	const [newTodo, setNewTodo] = useState('');
 	const [todoItems, setTodoItems] = useState([]);
 
-	useEffect(() => {
+	async function deleteTodo(id: string) {
+		const res = await fetch(`http://localhost:4000/todo/${id}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		const data = await res.text();
+		getTodos();
+		console.log(data);
+	}
+
+	async function addTodo() {
+		//Unique ID
+		const res = await fetch('http://localhost:4000/todo', {
+			body: JSON.stringify({ todoItem: newTodo }),
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		const data = await res.json();
+		getTodos();
+		console.log(data);
+	}
+	// async
+	async function getTodos() {
 		fetch('http://localhost:4000/todo')
 			.then((res) => res.json())
 			.then((todoItems) => {
 				setTodoItems(todoItems);
 			});
-	});
+	}
+
+	useEffect(() => {
+		getTodos();
+	}, []);
 
 	return (
 		<div>
@@ -42,40 +49,44 @@ export function TodoItems() {
 				<label htmlFor='todoItem' className='form-label'>
 					Submit New Todo Item
 				</label>
-				<div className='d-flex justify-content-between align-items-center'>
-					<input
-						type='text'
-						className='form-control'
-						id='todoItem'
-						placeholder='Buy Tissue'
-					/>
-					<button
-						type='button'
-						className='btn btn-primary'
-						onClick={(): void => {
-							const item = (
-								document.getElementById('todoItem') as HTMLInputElement
-							).value;
-							if (item) {
-								addTodo(item);
-							}
-						}}
-					>
-						{' '}
-						Add
-					</button>
-				</div>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						addTodo();
+					}}
+				>
+					<div className='d-flex justify-content-between align-items-center'>
+						<input
+							type='text'
+							className='form-control'
+							id='todoItem'
+							placeholder='Buy Tissue'
+							value={newTodo}
+							onChange={(e) => setNewTodo(e.target.value)}
+						/>
+						<button
+							type='button'
+							className='btn btn-primary'
+							onClick={(): void => {
+								addTodo();
+							}}
+						>
+							{' '}
+							Add
+						</button>
+					</div>
+				</form>
 			</div>
 			<ul className='list-group'>
 				{todoItems.map((item: any) => (
 					<div className='container'>
 						<li className='list-group-item d-flex justify-content-between align-items-center mb-3'>
-							{item}
+							{item.contents}
 							<button
 								type='button'
 								className='btn btn-danger'
 								onClick={(): void => {
-									deleteTodo(item);
+									deleteTodo(item.id);
 								}}
 							>
 								<svg
