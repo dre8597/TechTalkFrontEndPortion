@@ -26,7 +26,7 @@ describe('Todo Items', () => {
 		render(TodoItem(mockTodoItem));
 		const deleteButton = screen.getByRole('button');
 		fireEvent.click(deleteButton);
-		await waitFor(() => expect(mockTodoItem.onDelete).toBeCalledTimes(1));
-		await waitFor(() => expect(mockTodoItem.onDelete).toBeCalledWith('1'));
+		expect(mockTodoItem.onDelete).toBeCalledTimes(1);
+		expect(mockTodoItem.onDelete).toBeCalledWith('1');
 	});
 });
