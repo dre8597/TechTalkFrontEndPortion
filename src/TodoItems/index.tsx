@@ -30,8 +30,8 @@ export function TodoItems() {
 				'Content-Type': 'application/json',
 			},
 		});
-		const data = await res.json();
-		getTodos();
+		const data = res.ok;
+		//getTodos();
 		console.log(data);
 	}
 
